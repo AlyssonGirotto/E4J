@@ -150,6 +150,7 @@
 /*     */ 
 /*     */   public void addEdgeTemplate(String name, ImageIcon icon, String style, int width, int height, Object value)
 /*     */   {
+                System.out.println("adicionando aresta template");
 /* 153 */     mxGeometry geometry = new mxGeometry(0.0D, 0.0D, width, height);
 /* 154 */     geometry.setTerminalPoint(new mxPoint(0.0D, height), true);
 /* 155 */     geometry.setTerminalPoint(new mxPoint(width, 0.0D), false);
@@ -206,7 +207,6 @@
 /* 206 */     entry.setVerticalTextPosition(3);
 /* 207 */     entry.setHorizontalTextPosition(0);
 /* 208 */     entry.setIconTextGap(0);
-/*     */     
 /* 210 */     entry.setToolTipText(name);
 /* 211 */     entry.setText(name);
 /*     */     

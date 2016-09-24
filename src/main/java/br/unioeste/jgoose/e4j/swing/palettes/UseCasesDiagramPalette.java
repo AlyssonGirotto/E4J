@@ -40,7 +40,7 @@
 /* 40 */         CONSOLE.fatal(ex);
 /*    */       }
 /*    */     }
-/*    */     
+
 /* 44 */     Element element = IStarUtils.createAssociation();
 /* 45 */     addEdgeTemplate("Association", new ImageIcon("resources/shapes/use cases diagram/association.png"), "straight;endArrow=none;noLabel=1;shape=curvedEdge;edgeStyle=curvedEdgeStyle", 80, 80, element);
 /* 46 */     element = IStarUtils.createGeneralization();

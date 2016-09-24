@@ -74,6 +74,9 @@ public class CustomGraph extends mxGraph {
     public Object createEdge(Object parent, String id, Object value,
             Object source, Object target, String style) {
 
+        System.out.println("source" + source);
+        System.out.println("target" + target);
+        
         if (edgeTemplate != null) {
             mxCell edge = (mxCell) cloneCells(new Object[]{edgeTemplate})[0];
 
@@ -109,6 +112,11 @@ public class CustomGraph extends mxGraph {
 //        boolean result = super.isEdgeValid(edge, source, target);
         //@TODO: validation edges! when need the edge informations.
 //        LOG.debug("Validating edge by errors output.");
+
+        System.out.println("edge " + edge);
+        System.out.println("source " + source);
+        System.out.println("target " + target);
+        
         if (!(source instanceof mxCell)) {
             LOG.debug("source is not mxCell.");
             return result;

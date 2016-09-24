@@ -42,7 +42,7 @@
 /* 42 */       CONSOLE.error("LookAndFeel error", ex);
 /*    */     }
 /*    */     
-/* 45 */     EditorJFrame editor = new EditorJFrame(true);
+/* 45 */     EditorJFrame editor = new EditorJFrame(0);
 /* 46 */     editor.setDefaultCloseOperation(3);
 /*    */     
 /*    */ 

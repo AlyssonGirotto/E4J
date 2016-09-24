@@ -28,16 +28,19 @@ public class EditorJFrame extends JFrame {
     private BasicGraphEditor editor;
     private EditorMenuBar menubar;
 
-    public EditorJFrame(boolean iStar) throws HeadlessException, IOException {
+    public EditorJFrame(int type) throws HeadlessException, IOException {
 
         mxSwingConstants.SHADOW_COLOR = Color.LIGHT_GRAY;
         mxConstants.W3C_SHADOWCOLOR = "#D3D3D3";
 
-        if (iStar) { // add editor istar
+        if (type == 0) { // add editor istar
             this.editor = new BasicIStarEditor(this);
             this.getContentPane().add(this.editor);
-        } else { // add editor use cases
+        } else if (type == 1){ // add editor use cases
             this.editor = new BasicUseCasesEditor(this);
+            this.getContentPane().add(this.editor);
+        } else if (type == 2){ // add bpmn editor
+            this.editor = new BasicBPMNEditor(this);
             this.getContentPane().add(this.editor);
         }
         // add menubar

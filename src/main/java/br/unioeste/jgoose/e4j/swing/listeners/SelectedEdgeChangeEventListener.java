@@ -1,6 +1,7 @@
 /*    */ package br.unioeste.jgoose.e4j.swing.listeners;
 /*    */ 
 /*    */ import br.unioeste.jgoose.e4j.CustomGraph;
+import br.unioeste.jgoose.e4j.CustomGraphBPMN;
 /*    */ import com.mxgraph.model.mxIGraphModel;
 /*    */ import com.mxgraph.swing.util.mxGraphTransferable;
 /*    */ import com.mxgraph.util.mxEventObject;
@@ -41,7 +42,11 @@ import com.mxgraph.util.mxEventSource;
 /*    */ 
 /* 41 */       if (this.graph.getModel().isEdge(cell))
 /*    */       {
-/* 43 */         ((CustomGraph)this.graph).setEdgeTemplate(cell);
+                    try{
+                        ((CustomGraph)this.graph).setEdgeTemplate(cell);
+                    }catch(Exception e){
+                        ((CustomGraphBPMN)this.graph).setEdgeTemplate(cell);
+                    }
 /*    */       }
 /*    */     }
 /*    */   }
