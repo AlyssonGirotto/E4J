@@ -28,7 +28,12 @@ public class EventPalette extends AbstractPalette {
             try {
                 String nodeXml = mxUtils.readFile(f.getAbsolutePath());
                 
-                if (f.getName().matches("end.shape|intermediate.shape|start.shape"))
+                if (f.getName().matches("3end.shape|2intermediate.shape|1start.shape|"
+                        + "end-compensation.shape|end-cancel.shape|end-error.shape|"
+                        + "end-link.shape|end-message.shape|end-multiple.shape|end-terminate.shape|"
+                        + "start-link.shape|start-message.shape|start-multiple.shape|start-rule.shape|start-timer.shape|"
+                        + "intermediate-cancel.shape|intermediate-compensation.shape|intermediate-error.shape||intermediate-timer.shape|" 
+                        + "intermediate-link.shape|intermediate-message.shape|intermediate-multiple.shape|intermediate-rule.shape"))
                     ImportStencilAction.addStencilShape(this, nodeXml, f.getParent() + File.separator);
             } catch (IOException ex) {
                 CONSOLE.fatal(ex);

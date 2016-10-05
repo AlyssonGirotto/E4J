@@ -20,6 +20,7 @@
 /*    */   
 /*    */   public Object createTargetVertex(MouseEvent e, Object source)
 /*    */   {
+    System.out.println("Connection handler");
 /* 23 */     mxGraph graph = this.graphComponent.getGraph();
 /* 24 */     Object clone = graph.cloneCells(new Object[] { source }, false)[0];
 /* 25 */     mxIGraphModel model = graph.getModel();

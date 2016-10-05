@@ -4,6 +4,8 @@ import com.mxgraph.canvas.mxGraphics2DCanvas;
 import br.unioeste.jgoose.e4j.swing.BasicGraphEditor;
 import br.unioeste.jgoose.e4j.filters.DefaultFileFilter;
 import br.unioeste.jgoose.e4j.shape.ActorShape;
+import br.unioeste.jgoose.e4j.shape.SubProcessShape;
+import br.unioeste.jgoose.e4j.swing.BasicBPMNEditor;
 import br.unioeste.jgoose.e4j.swing.EditorPalette;
 import br.unioeste.jgoose.util.BPMNUtils;
 import br.unioeste.jgoose.util.IStarUtils;
@@ -12,6 +14,7 @@ import com.mxgraph.model.mxGeometry;
 import com.mxgraph.shape.mxBasicShape;
 import com.mxgraph.shape.mxStencilShape;
 import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxPoint;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.util.mxUtils;
 import java.awt.event.ActionEvent;
@@ -29,7 +32,7 @@ import org.w3c.dom.Element;
 public class ImportStencilAction extends AbstractAction {
 
     protected String lastDir;
-    
+
     /**
      * Loads and registers the shape as a new shape in mxGraphics2DCanvas and
      * adds a new entry to use that shape in the specified palette
@@ -44,6 +47,7 @@ public class ImportStencilAction extends AbstractAction {
         // Ensure the first char is a "<"
         int lessthanIndex = nodeXml.indexOf("<");
         nodeXml = nodeXml.substring(lessthanIndex);
+
         mxStencilShape newShape = new mxStencilShape(nodeXml);
         String name = newShape.getName();
         ImageIcon icon = null;
@@ -53,25 +57,86 @@ public class ImportStencilAction extends AbstractAction {
         }
         // Registers the shape in the canvas shape registry
         mxGraphics2DCanvas.putShape(name, newShape);
-              
+
         if (palette != null && icon != null) {
             //@TODO: magic number for w and h! get it from content of .shape?
-            int w = 80;
-            int h = 80;
+            int w = 60;
+            int h = 60;
 
-            String style = "shape=" + name;
             Element value = null;
             String type = name.toLowerCase();
 
-            switch (type) {                
+            String style = "shape=" + name;
+            
+            switch (type) {
                 case "end event":
                     value = BPMNUtils.createEndEvent();
+                    break;
+                case "end-cancel":
+                    value = BPMNUtils.createEndEvent("", "end-cancel");
+                    break;
+                case "end-compensation":
+                    value = BPMNUtils.createEndEvent("", "end-compensation");
+                    break;
+                case "end-error":
+                    value = BPMNUtils.createEndEvent("", "end-error");
+                    break;
+                case "end-link":
+                    value = BPMNUtils.createEndEvent("", "end-link");
+                    break;
+                case "end-message":
+                    value = BPMNUtils.createEndEvent("", "end-message");
+                    break;
+                case "end-multiple":
+                    value = BPMNUtils.createEndEvent("", "end-multiple");
+                    break;
+                case "end-terminate":
+                    value = BPMNUtils.createEndEvent("", "end-terminate");
                     break;
                 case "intermediate event":
                     value = BPMNUtils.createIntermediateEvent();
                     break;
+                case "intermediate-cancel":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-cancel");
+                    break;
+                case "intermediate-compensation":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-compensation");
+                    break;
+                case "intermediate-error":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-error");
+                    break;
+                case "intermediate-link":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-link");
+                    break;
+                case "intermediate-message":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-message");
+                    break;
+                case "intermediate-multiple":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-multiple");
+                    break;
+                case "intermediate-rule":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-rule");
+                    break;
+                case "intermediate-timer":
+                    value = BPMNUtils.createIntermediateEvent("", "intermediate-timer");
+                    break;
                 case "start event":
                     value = BPMNUtils.createStartEvent();
+                    break;
+                case "start-link":
+                    value = BPMNUtils.createStartEvent("", "start-link");
+                    break;
+                case "start-message":
+                    value = BPMNUtils.createStartEvent("", "start-message");
+                    break;
+                case "start-multiple":
+                    value = BPMNUtils.createStartEvent("", "start-multiple");
+                    break;
+                case "start-rule":
+                    value = BPMNUtils.createStartEvent("", "start-rule");
+                    break;
+                case "start-timer":
+                    value = BPMNUtils.createStartEvent("", "start-timer");
                     break;
                 case "text-annotation":
                     value = BPMNUtils.createTextAnnotation();
@@ -99,73 +164,19 @@ public class ImportStencilAction extends AbstractAction {
                     break;
                 case "gateway exclusive xor data based":
                     value = BPMNUtils.createGatewayExclusive();
-                    break;    
+                    break;
                 case "gateway exclusive xor event based":
                     value = BPMNUtils.createGatewayExclusiveEventBased();
-                    break;                
+                    break;
                 case "sub-process":
                     value = BPMNUtils.createSubprocess();
+                    style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_RECTANGLE
+                            + mxConstants.STYLE_ROUNDED + "=1";
+                    mxGraphics2DCanvas.putShape(name, new SubProcessShape(nodeXml));
                     break;
                 case "task":
                     value = BPMNUtils.createTask();
                     break;
-                /*
-                case "actor":
-                    value = IStarUtils.createActor();
-                    style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_ELLIPSE;
-//                    style += ";spacingTop=30;verticalAlign=top;align=left;spacingLeft=20;";
-                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));
-                    break;
-                case "agent":
-                    value = IStarUtils.createAgent();
-                    style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_ELLIPSE;
-//                    style += ";spacingTop=30;verticalAlign=top;align=left;spacingLeft=20;";
-                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));
-                    break;
-                case "role":
-                    value = IStarUtils.createRole();
-                    style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_ELLIPSE;
-//                    style += ";spacingTop=30;verticalAlign=top;align=left;spacingLeft=20;";
-                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));
-                    break;
-                case "position":
-                    value = IStarUtils.createPosition();
-                    style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_ELLIPSE;
-//                    style += ";spacingTop=30;verticalAlign=top;align=left;spacingLeft=20;";
-                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));
-                    break;
-                case "goal":
-                    value = IStarUtils.createGoal();
-                    w = 120;
-                    h = 60;
-                    break;
-                case "resource":
-                    value = IStarUtils.createResource();
-                    w = 120;
-                    h = 60;
-                    break;
-                case "softgoal":
-                    value = IStarUtils.createSoftGoal();
-                    w = 120;
-                    h = 60;
-                    break;
-                case "task":
-                    style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_HEXAGON;
-                    value = IStarUtils.createTask();
-                    w = 120;
-                    h = 60;
-                    break;
-                case "actor use case":
-                    value = IStarUtils.createActorUseCase();
-                    style += ";";
-                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));
-                    break;
-                case "use case":
-                    value = IStarUtils.createUseCase();
-                    w = 120;
-                    h = 60;
-                    break;
-                */
                 default:
                     System.out.println("default type: " + type);
                     break;
@@ -174,7 +185,7 @@ public class ImportStencilAction extends AbstractAction {
             mxGeometry geom = new mxGeometry(0, 0, w, h);
             mxCell cell = new mxCell(value, geom, style);
             cell.setVertex(true);
-            palette.addTemplate(name, icon, cell);
+            palette.addTemplate(name, icon, cell);                        
         }
         return name;
     }

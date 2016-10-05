@@ -20,15 +20,9 @@ public class SwinLanePalette extends AbstractPalette {
         super(mxResources.get("Elements", "Swimlanes"), libraryPane);    
         
         Element pool = BPMNUtils.createPool();
-        this.addTemplate("Pool", 
+        this.addSwimlane("Pool", 
                 new ImageIcon("resources/shapes/bpmn/swimlane/pool.png"), 
                 "shape=swimlane;connectable=0;horizontal=false", 
-                380, 180, pool);
-        
-        Element lane = BPMNUtils.createLane();
-        this.addTemplate("Lane", 
-                new ImageIcon("resources/shapes/bpmn/swimlane/lane.png"), 
-                "shape=swimlane;autosize=1;connectable=false;horizontal=false", 
-                380, 180, lane);
+                580, 230, pool);
     }
 }

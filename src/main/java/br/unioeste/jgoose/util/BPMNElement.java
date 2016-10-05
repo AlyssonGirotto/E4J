@@ -12,7 +12,7 @@ public class BPMNElement {
 
     // Elemento genérico
     public BPMNElement(String tagName, String label, String type) {
-            this(tagName, label, type, new Properties());
+        this(tagName, label, type, new Properties());
     }
 
     public BPMNElement(String tagName, String label, String type, Properties attributes) {

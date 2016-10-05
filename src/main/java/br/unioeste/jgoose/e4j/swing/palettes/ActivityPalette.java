@@ -2,12 +2,15 @@ package br.unioeste.jgoose.e4j.swing.palettes;
 
 import br.unioeste.jgoose.e4j.actions.ImportStencilAction;
 import br.unioeste.jgoose.e4j.filters.ShapeFilenameFilter;
+import br.unioeste.jgoose.util.BPMNUtils;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.util.mxUtils;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
 
 public class ActivityPalette extends AbstractPalette {
 
@@ -34,5 +37,12 @@ public class ActivityPalette extends AbstractPalette {
                 CONSOLE.fatal(ex);
             }
         }
+        /*
+        Element subProcess = BPMNUtils.createSubprocess();
+        this.addTemplate("Sub-Process", 
+                new ImageIcon("resources/shapes/bpmn/activity/sub-process.png"), 
+                "shape=swimlane;sub-process;dashed", 
+                80, 80, subProcess);
+        */
     }
 }

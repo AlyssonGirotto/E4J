@@ -43,6 +43,60 @@ public class CustomGraphComponent extends mxGraphComponent {
      *
      * @param graph
      */
+    public CustomGraphComponent(mxGraph graph, boolean BPMN) {
+        super(graph);
+        System.out.println("Custom graph component");
+
+        // Sets switches typically used in an editor
+//        setPageVisible(true);
+        setGridVisible(true);
+        setToolTips(true);
+        zoomTo(0.75, true);
+
+        // create target?
+        getConnectionHandler().setCreateTarget(false);
+//        getConnectionHandler().setCreateTarget(true);
+
+        // Loads the defalt stylesheet from an external file
+        mxCodec codec = new mxCodec();
+        URL defaultStyleResource = BasicIStarEditor.class.getResource("/com/mxgraph/examples/swing/resources/default-style.xml");
+        Document doc = mxUtils.loadDocument(defaultStyleResource.toString());
+        codec.decode(doc.getDocumentElement(), graph.getStylesheet());
+
+        // Sets the background to white
+        getViewport().setOpaque(true);
+        getViewport().setBackground(Color.WHITE);
+
+        // listener when fold cells. Set minimum size.
+        getGraph().addListener(mxEvent.FOLD_CELLS, new mxEventSource.mxIEventListener() {
+            @Override
+            public void invoke(Object sender, mxEventObject evt) {
+                Object[] cells = (Object[]) evt.getProperty("cells");
+
+                for (Object c : cells) {
+                    if (c instanceof mxCell) {
+                        mxCell cell = (mxCell) c;                        
+                                                
+                        mxCellState state = CustomGraphComponent.this.getGraph().getView().getState(cell);                        
+                        
+                        if (cell.isCollapsed()) {
+//                            state.setLabel("actor-collapsed");
+                            mxGeometry geom = cell.getGeometry();
+                            double w = geom.getWidth();
+                            double h = geom.getHeight();
+                            if (w < 80) {
+                                geom.setWidth(80);
+                            }
+                            if (h < 80) {
+                                geom.setHeight(80);
+                            }
+                        }
+
+                    }
+                }
+            }
+        });
+    }
     public CustomGraphComponent(mxGraph graph) {
         super(graph);
 
@@ -89,12 +143,6 @@ public class CustomGraphComponent extends mxGraphComponent {
                                 geom.setHeight(80);
                             }
                         }
-//                        else {
-//                            state.setLabel("actor-default");
-//                            cell.getGeometry().setHeight(220);
-//                            cell.getGeometry().setWidth(220);
-//                        }
-//                        System.out.println("state:" + state.getLabel());
                     }
                 }
             }

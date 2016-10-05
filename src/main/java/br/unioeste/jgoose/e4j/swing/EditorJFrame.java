@@ -42,6 +42,7 @@ public class EditorJFrame extends JFrame {
         } else if (type == 2){ // add bpmn editor
             this.editor = new BasicBPMNEditor(this);
             this.getContentPane().add(this.editor);
+            
         }
         // add menubar
         this.menubar = new EditorMenuBar(editor);

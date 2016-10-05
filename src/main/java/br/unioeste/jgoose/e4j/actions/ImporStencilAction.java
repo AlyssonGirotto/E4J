@@ -66,7 +66,7 @@ public class ImporStencilAction extends AbstractAction {
                     value = IStarUtils.createActor();
                     style += ";" + mxConstants.STYLE_PERIMETER + "=" + mxConstants.PERIMETER_ELLIPSE;
 //                    style += ";spacingTop=30;verticalAlign=top;align=left;spacingLeft=20;";
-                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));
+                    mxGraphics2DCanvas.putShape(name, new ActorShape(nodeXml));                   
                     break;
                 case "agent":
                     value = IStarUtils.createAgent();
@@ -124,7 +124,7 @@ public class ImporStencilAction extends AbstractAction {
             mxGeometry geom = new mxGeometry(0, 0, w, h);
             mxCell cell = new mxCell(value, geom, style);
             cell.setVertex(true);
-            palette.addTemplate(name, icon, cell);
+            palette.addTemplate(name, icon, cell);                        
         }
         return name;
     }

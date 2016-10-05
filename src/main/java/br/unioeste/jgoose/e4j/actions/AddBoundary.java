@@ -60,8 +60,7 @@
 /*    */         
 /*    */         
 /*    */ 
-/* 63 */         mxCell port = new mxCell(cell.getAttribute("label"), geo, style);
-/*    */         
+/* 63 */         mxCell port = new mxCell(cell.getAttribute("label"), geo, style);/*    */         
 /* 65 */         port.setVertex(true);
 /*    */         
 /* 67 */         port.setConnectable(false);

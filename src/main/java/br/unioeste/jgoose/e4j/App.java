@@ -22,6 +22,7 @@
 /*    */   
 /*    */   public App(mxGraph graph)
 /*    */   {
+    System.out.println("APP Construtor");
 /* 25 */     this.graph = graph;
 /* 26 */     this.model = graph.getModel();
 /*    */   }

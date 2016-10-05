@@ -30,17 +30,21 @@ public class BasicBPMNEditor extends BasicGraphEditor {
 
     public static final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("pt_BR"));
     public static URL url = null;
-
+    private static mxGraph graph;
+    
     public BasicBPMNEditor(JFrame frame) {
-        this("JGOOSE - BPMN Editor", new CustomGraphComponent(new CustomGraphBPMN()));
+        this("JGOOSE - BPMN Editor", new CustomGraphComponent(new CustomGraphBPMN(), true));
         frame.setTitle("JGOOSE - Editor BPMN");
         super.setFrame(frame);
     }
 
+    public static mxGraph getMxGraph(){ return graph; }
+    
     public BasicBPMNEditor(String appTitle, mxGraphComponent component) {
         super(appTitle, component);
         this.graphComponent.setEnterStopsCellEditing(true);
-        final mxGraph graph = this.graphComponent.getGraph();
+        mxGraph graph = this.graphComponent.getGraph();
+        
         
         // Creates the shapes palette
         EditorPalette eventPalette = new EventPalette(this.libraryPane);
@@ -57,7 +61,7 @@ public class BasicBPMNEditor extends BasicGraphEditor {
         flowPalette.addListener("select", (mxEventSource.mxIEventListener) new SelectedEdgeChangeEventListener(graph));
         swimlanePalette.addListener("select", (mxEventSource.mxIEventListener) new SelectedEdgeChangeEventListener(graph));
                
-        Object item = eventPalette.getComponent(2);
+        Object item = eventPalette.getComponent(0);
         eventPalette.setSelectionEntry((JLabel) item, null);
     }
 

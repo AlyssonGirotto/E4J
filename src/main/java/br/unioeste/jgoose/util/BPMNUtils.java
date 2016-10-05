@@ -44,10 +44,13 @@ public class BPMNUtils {
     public static Element createTask () { return create(new BPMNElement("activity", "Task", "task")); }
       
     public static Element createStartEvent () { return create(new BPMNElement("event", "Start Event", "start_event")); }
+    public static Element createStartEvent (String name, String type) { return create(new BPMNElement("event", name, type)); }
     public static Element createEndEvent () { return create(new BPMNElement("event", "End Event", "end_event")); }
+    public static Element createEndEvent (String name, String type) { return create(new BPMNElement("event", name, type)); }
     public static Element createIntermediateEvent () { return create(new BPMNElement("event", "Intermediate Event", "intermediate_event")); }
+    public static Element createIntermediateEvent (String name, String type) { return create(new BPMNElement("event", name, type)); }
     
-    public static Element createSequenceFlow () { return create(new BPMNElement("flow", "Sequence Flow", "sequence_flow")); }
-    public static Element createMessageFlow () { return create(new BPMNElement("flow", "Message Flow", "message_flow")); }
-    public static Element createAssociationFlow () { return create(new BPMNElement("flow", "Association Flow", "association_flow")); }  
+    public static Element createSequenceFlow () { return create(new BPMNElement("flow", "", "sequence_flow")); }
+    public static Element createMessageFlow () { return create(new BPMNElement("flow", "", "message_flow")); }
+    public static Element createAssociationFlow () { return create(new BPMNElement("flow", "", "association_flow")); }  
 }

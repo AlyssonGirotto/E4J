@@ -11,6 +11,7 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphView;
 import com.mxgraph.view.mxStyleRegistry;
+import java.awt.Point;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -19,7 +20,7 @@ import org.w3c.dom.Element;
 /**
  * A graph that creates new edges from a given template edge.
  *
- * @author Leonardo
+ * @author Alysson.Girotto
  */
 public class CustomGraphBPMN extends mxGraph {
 
@@ -31,13 +32,13 @@ public class CustomGraphBPMN extends mxGraph {
 
     public CustomGraphBPMN() {
         super();
-       
+
         setAlternateEdgeStyle("edgeStyle=mxEdgeStyle.ElbowConnector;elbow=vertical;");
-                
+
         // set default edge (sequence)
         Element sequenceFlow = BPMNUtils.createSequenceFlow();
         mxGeometry geom = new mxGeometry(0, 0, 80, 80);
-        Object cell = new mxCell(sequenceFlow, geom, "straight;noLabel=1;edgeStyle=mxEdgeStyle.ElbowConnector;elbow=vertical");
+        Object cell = new mxCell(sequenceFlow, geom, "straight;edgeStyle=mxEdgeStyle.ElbowConnector;elbow=vertical");
 
         ((mxCell) cell).setEdge(true);
         setEdgeTemplate(cell);
@@ -67,7 +68,7 @@ public class CustomGraphBPMN extends mxGraph {
     @Override
     public Object createEdge(Object parent, String id, Object value,
             Object source, Object target, String style) {
-        
+
         if (edgeTemplate != null) {
             mxCell edge = (mxCell) cloneCells(new Object[]{edgeTemplate})[0];
 
@@ -81,6 +82,12 @@ public class CustomGraphBPMN extends mxGraph {
         return super.createEdge(parent, id, value, source, target, style);
     }
 
+    @Override
+    public boolean isValidDropTarget(Object cell, Object[] cells) {                
+        return super.isValidDropTarget(cell, cells);
+    }
+    
+    
 //    @Override
 //    public boolean isValidDropTarget(Object cell, Object[] cells) {
 //        mxCell target = (mxCell)cell;
@@ -99,9 +106,9 @@ public class CustomGraphBPMN extends mxGraph {
      */
     @Override
     public String getEdgeValidationError(Object edge, Object source, Object target) {
-                       
+
         String result = super.getEdgeValidationError(edge, source, target);
-        
+
 //        boolean result = super.isEdgeValid(edge, source, target);
         //@TODO: validation edges! when need the edge informations.
 //        LOG.debug("Validating edge by errors output.");
@@ -123,71 +130,90 @@ public class CustomGraphBPMN extends mxGraph {
         mxCell cellSource = (mxCell) source;
         mxCell cellTarget = (mxCell) target;
         mxCell cellEdge = (mxCell) edge;
-               
-        String sourceTagName = cellSource.getAttribute("tagName");        
-        String sourceType = cellSource.getAttribute("type");
-        String targetType = cellTarget.getAttribute("type");                                 
 
+        Element sourceElement = null;
+        Element targetElement = null;
+        
+        if (cellSource.getValue() instanceof Element) {
+            sourceElement = (Element) cellSource.getValue();
+        } else {
+            LOG.debug("Value of cell is not a Element type.");
+            return null;
+        }
+        
+        if (cellTarget.getValue() instanceof Element) {
+            targetElement = (Element) cellTarget.getValue();
+        } else {
+            LOG.debug("Value of cell is not a Element type.");
+            return null;
+        }
+        
+        String sourceTagName = sourceElement.getTagName();
+        String targetTagName = targetElement.getTagName();
+        
+        //System.out.println("CustomGraphBPMN sourceTagName: " + sourceTagName + " targetTagName: " + targetTagName);
+        
+        String sourceType = cellSource.getAttribute("type");
+        String targetType = cellTarget.getAttribute("type");
+        
         String edgeTag = ((Element) cellEdge.getValue()).getTagName();
         String edgeType = ((Element) cellEdge.getValue()).getAttribute("type");
         
+        if(edgeType.equals("association_flow")){
+            System.out.println("source " + sourceTagName);
+            System.out.println("target " + targetTagName);
+        }
+        
         switch (edgeType) {
             case "message_flow":
-                if(!sourceType.matches("start_event|end_event|intermediate_event|task|subprocess")
-                        || (!targetType.matches("start_event|end_event|intermediate_event|task|subprocess")
-                        || sourceType.compareTo(targetType) == 0)) {
+                if (!sourceTagName.matches("event|activity")
+                        || (!targetTagName.matches("event|activity"))) {
                     String error = "Edge '"
-                                    + "" + edgeType
-                                    + "' between "
-                                    + "" + sourceType + " (source) "
-                                    + " and "
-                                    + "" + targetType + " (target) "
-                                    + " is invalid.";
-                            return error;
+                            + "" + edgeType
+                            + "' between "
+                            + "" + sourceType + " ( " + sourceTagName + " )" + " (source) "
+                            + " and "
+                            + "" + targetType + " ( " + targetTagName + " )" + " (target) "
+                            + " is invalid.";
+                    return error;
                 }
                 break;
-            case "annotation_flow":
-                if(!sourceType.matches("start_event|end_event|intermediate_event|gateway|task|subprocess")
-                        || (!targetType.matches("data_store|data_object|text_annotation")
-                        || sourceType.compareTo(targetType) == 0)) {
-                    String error = "Edge '"
-                                    + "" + edgeType
-                                    + "' between "
-                                    + "" + sourceType + " (source) "
-                                    + " and "
-                                    + "" + targetType + " (target) "
-                                    + " is invalid.";
-                            return error;
-                } else{
-                    if((sourceType.matches("start_event|end_event|intermediate_event|gateway"))
-                        && !(targetType.matches("text_annotation"))){
-                       String error = "Edge '"
-                                    + "" + edgeType
-                                    + "' between "
-                                    + "" + sourceType + " (source) "
-                                    + " and "
-                                    + "" + targetType + " (target) "
-                                    + " is invalid.";
-                            return error; 
-                    }           
-                }
+            case "association_flow":
+                if(sourceTagName.matches("event|activity|gateway|artifact")){
+                
+                    if(sourceTagName.matches("activity") && targetType.matches("text_annotation|data_object|data_store")){
+                        break;
+                    } else if (sourceTagName.matches("gateway|event") && targetType.matches("text_annotation")){
+                        break;
+                    } else if (sourceType.matches("data_object|data_store") && targetTagName.matches("activity")){
+                        break;
+                    } else{
+                        String error = "Edge '"
+                            + "" + edgeType
+                            + "' between "
+                            + "" + sourceType + " ( " + sourceTagName + " )" + " (source) "
+                            + " and "
+                            + "" + targetType + " ( " + targetTagName + " )" + " (target) "
+                            + " is invalid.";
+                    return error;
+                    }                    
+                }                
                 break;
-            case "sequence_flow":
-                if(!sourceType.matches("start_event|intermediate_event|gateway|task|subprocess")
-                        || (!targetType.matches("end_event|intermediate_event|gateway|task|subprocess"))
-                        || sourceType.compareTo(targetType) == 0) {
+            case "sequence_flow":                
+                if (!sourceTagName.matches("event|gateway|activity")
+                        || (!targetTagName.matches("event|gateway|activity"))) {
                     String error = "Edge '"
-                                    + "" + edgeType
-                                    + "' between "
-                                    + "" + sourceType + " (source) "
-                                    + " and "
-                                    + "" + targetType + " (target) "
-                                    + " is invalid.";
-                            return error;
+                            + "" + edgeType
+                            + "' between "
+                            + "" + sourceType + " ( " + sourceTagName + " )" + " (source) "
+                            + " and "
+                            + "" + targetType + " ( " + targetTagName + " )" + " (target) "
+                            + " is invalid.";
+                    return error;
                 }
                 break;
         }
-        
+
         return result;
     }
 
@@ -204,13 +230,19 @@ public class CustomGraphBPMN extends mxGraph {
      */
     @Override
     public String convertValueToString(Object c) {
+        //System.out.println("convert value to string");
         String result = null;
         if (c instanceof mxCell) {
             mxCell cell = (mxCell) c;
+
             Object v = cell.getValue();
             if (v instanceof Element) {
                 Element value = (Element) v;
                 result = value.getAttribute("label");
+
+                String type = value.getTagName();
+
+                //System.out.println("type object: " + type);
             } else {
                 result = super.convertValueToString(c);
             }
@@ -219,12 +251,51 @@ public class CustomGraphBPMN extends mxGraph {
     }
 
     @Override
+    public Object getDropTarget(Object[] cells, Point pt, Object cell) {
+        //System.out.println("custom graph - get drop target");
+        /*
+        String fatherType = null;
+        String childrenType = null;
+        String fatherTagName = null;
+        String childrenTagName = null;
+        
+        // Get father's name
+        if (cell instanceof mxCell) {
+            mxCell cellElement = (mxCell) cell;
+            Object v = cellElement.getValue();
+
+            if (v instanceof Element) {
+                Element value = (Element) v;
+                fatherType = value.getAttribute("type");
+                fatherTagName = value.getTagName();
+            }
+        }
+
+        // Get children's name
+        if (cells[0] != null && cells[0] instanceof mxCell) {
+            mxCell cellElement = (mxCell) cells[0];
+            Object v = cellElement.getValue();
+
+            if (v instanceof Element) {
+                Element value = (Element) v;
+                childrenType = value.getAttribute("type");
+                childrenTagName = value.getTagName();
+            }                        
+        }
+        */
+        return super.getDropTarget(cells, pt, cell);
+    }
+
+    @Override
     public void cellLabelChanged(Object cellChanged, Object newValue, boolean autoSize) {
+        //System.out.println("cell label changed");
         if (cellChanged instanceof mxCell && newValue != null) {
             mxCell cell = (mxCell) cellChanged;
             Object v = cell.getValue();
+            
             if (v instanceof Element) {
                 Element value = (Element) v;
+                
                 String label = newValue.toString();
                 value.setAttribute("label", label);
                 //se for um grupo, quando ele estiver Collapse e for editado, tbm editar o shape atras...
@@ -232,6 +303,7 @@ public class CustomGraphBPMN extends mxGraph {
                     super.cellLabelChanged(cell.getChildAt(0), newValue, autoSize);
                 }
                 newValue = v;
+             
             }
         }
         super.cellLabelChanged(cellChanged, newValue, autoSize);
@@ -239,12 +311,15 @@ public class CustomGraphBPMN extends mxGraph {
 
     @Override
     public boolean isCellEditable(Object cell) {
+        System.out.println("is cell editable");
         boolean result = super.isCellEditable(cell);
 
+        /*
         mxCell edge = (mxCell) cell;
         if (edge.isEdge()) {
             result = false;
         }
+        */
         return result;
     }
 
