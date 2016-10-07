@@ -26,7 +26,7 @@ public class BPMNUtils {
     public static Element createPool () { return create(new BPMNElement("swimlane", "Pool", "pool")); }
     public static Element createLane () { return create(new BPMNElement("swimlane", "Lane", "lane")); }
     
-    public static Element createGroup () { return create(new BPMNElement("artifact", "Group", "group")); }
+    public static Element createGroup () { return create(new BPMNElement("artifact", "", "group")); }
     public static Element createTextAnnotation () { return create(new BPMNElement("artifact", "Text annotation", "text_annotation")); }
     public static Element createDataStore () { return create(new BPMNElement("artifact", "Data Store", "data_store")); }
     public static Element createDataObject () { return create(new BPMNElement("artifact", "Data Object", "data_object")); }
