@@ -54,9 +54,6 @@ import com.mxgraph.util.mxEventSource;
 /*    */     
 /* 54 */     this.graphComponent.setEnterStopsCellEditing(true);
 /* 55 */     mxGraph graph = this.graphComponent.getGraph();
-/*    */     
-/*    */ 
-/*    */ 
 /*    */ 
 /*    */ 
 /* 61 */     EditorPalette actorsPalette = new ActorsPalette(this.libraryPane);

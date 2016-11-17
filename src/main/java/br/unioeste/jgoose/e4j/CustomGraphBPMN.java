@@ -41,7 +41,7 @@ public class CustomGraphBPMN extends mxGraph {
         Object cell = new mxCell(sequenceFlow, geom, "straight;edgeStyle=mxEdgeStyle.ElbowConnector;elbow=vertical");
 
         ((mxCell) cell).setEdge(true);
-        setEdgeTemplate(cell);
+        setEdgeTemplate(cell);               
     }
 
     /**

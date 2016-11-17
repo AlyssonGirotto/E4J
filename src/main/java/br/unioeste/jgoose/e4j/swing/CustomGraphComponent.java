@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.EventObject;
+import javax.swing.JOptionPane;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,7 +52,8 @@ public class CustomGraphComponent extends mxGraphComponent {
 //        setPageVisible(true);
         setGridVisible(true);
         setToolTips(true);
-        zoomTo(0.75, true);
+        if(BPMN)
+            zoomTo(0.75, true);
 
         // create target?
         getConnectionHandler().setCreateTarget(false);
@@ -59,10 +61,11 @@ public class CustomGraphComponent extends mxGraphComponent {
 
         // Loads the defalt stylesheet from an external file
         mxCodec codec = new mxCodec();
-        URL defaultStyleResource = BasicIStarEditor.class.getResource("/com/mxgraph/examples/swing/resources/default-style.xml");
-        Document doc = mxUtils.loadDocument(defaultStyleResource.toString());
+        URL defaultStyleResource = BasicBPMNEditor.class.getResource("/com/mxgraph/examples/swing/resources/default-style.xml");
+        
+        Document doc = mxUtils.loadDocument(defaultStyleResource.toString());        
         codec.decode(doc.getDocumentElement(), graph.getStylesheet());
-
+              
         // Sets the background to white
         getViewport().setOpaque(true);
         getViewport().setBackground(Color.WHITE);
@@ -73,10 +76,11 @@ public class CustomGraphComponent extends mxGraphComponent {
             public void invoke(Object sender, mxEventObject evt) {
                 Object[] cells = (Object[]) evt.getProperty("cells");
 
-                for (Object c : cells) {
-                    if (c instanceof mxCell) {
+                for (Object c : cells) {                    
+                    if (c instanceof mxCell) {                        
                         mxCell cell = (mxCell) c;                        
-                                                
+                        JOptionPane.showMessageDialog(null, "CustomGraphComponente - Cells BPMN" + cell.getId());
+                                              
                         mxCellState state = CustomGraphComponent.this.getGraph().getView().getState(cell);                        
                         
                         if (cell.isCollapsed()) {
@@ -127,9 +131,11 @@ public class CustomGraphComponent extends mxGraphComponent {
                 Object[] cells = (Object[]) evt.getProperty("cells");
 
                 for (Object c : cells) {
+                    
                     if (c instanceof mxCell) {
                         mxCell cell = (mxCell) c;
-
+                        JOptionPane.showMessageDialog(null, "CustomGraphComponente - Cells Not BPMN" + cell.getId());
+                        
                         mxCellState state = CustomGraphComponent.this.getGraph().getView().getState(cell);
                         if (cell.isCollapsed()) {
 //                            state.setLabel("actor-collapsed");
